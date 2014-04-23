@@ -1,0 +1,69 @@
+<project name="space-recycler" default="jar">
+
+  <property name="dir.src" value="src" />
+  <property name="dir.res" value="res" />
+  <property name="dir.lib" value="lib" />
+  <property name="dir.build" value="build" />
+  <property name="dir.dist" value="dist" />
+
+  <property name="file.jar" value="${dir.dist}/space-recycler.jar" />
+
+  <property name="class.main" value="es.darkhogg.ld23.Main" />
+
+  <!-- Create the build directory -->
+  <target name="-mkdir-build">
+    <mkdir dir="${dir.build}" />
+  </target>
+
+  <!-- Create the distribution directory -->
+  <target name="-mkdir-dist">
+    <mkdir dir="${dir.dist}" />
+  </target>
+
+  <!-- Compiles everything from the source directory to the build directory -->
+  <target name="compile" depends="-mkdir-build">
+    <javac srcdir="${dir.src}" destdir="${dir.build}" source="1.7" target="1.7">
+      <classpath>
+        <fileset dir="${dir.lib}" includes="**/*.jar" />
+      </classpath>
+    </javac>
+  </target>
+
+  <!-- Copies everything from the resources directory to the build directory -->
+  <target name="-resources" depends="-mkdir-build">
+    <copy todir="${dir.build}">
+      <fileset dir="${dir.res}" />
+    </copy>
+  </target>
+
+  <!-- Create a runnable JAR with everything -->
+  <target name="jar" depends="compile, -resources, -mkdir-dist">
+    <manifestclasspath property="classpath" jarfile="${file.jar}">
+      <classpath>
+        <fileset dir="${dir.lib}" includes="**/*.jar" />
+      </classpath>
+    </manifestclasspath>
+
+    <jar destfile="${file.jar}" basedir="${dir.build}">
+      <manifest>
+        <attribute name="Main-Class" value="${class.main}" />
+        <attribute name="Permissions" value="all-permissions" />
+        <attribute name="Class-Path" value="${classpath}" />
+      </manifest>
+    </jar>
+
+    <chmod file="${file.jar}" perm="u+x" />
+  </target>
+  
+  <!-- Create a JAR and run it -->
+  <target name="run" depends="jar">
+    <java jar="${file.jar}" fork="true" />
+  </target>
+
+
+  <!-- Clean old compilations -->
+  <target name="clean">
+    <delete dir="${dir.build}" />
+    <delete dir="${dir.dist}" />
+  </target>
+</project>
