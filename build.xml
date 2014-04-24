@@ -1,14 +1,30 @@
-<project name="space-recycler" default="jar">
+<project name="tiny-infection" default="jar">
 
   <property name="dir.src" value="src" />
   <property name="dir.res" value="res" />
   <property name="dir.lib" value="lib" />
+  <property name="dir.devlib" value="devlib" />
   <property name="dir.build" value="build" />
   <property name="dir.dist" value="dist" />
 
-  <property name="file.jar" value="${dir.dist}/space-recycler.jar" />
+  <property name="file.jar" value="${dir.dist}/tiny-infection.jar" />
+  <property name="file.onejar" value="${dir.dist}/tiny-infection.one.jar" />
 
   <property name="class.main" value="es.darkhogg.ld23.Main" />
+
+  <!-- Define the ClassPath -->
+  <manifestclasspath property="classpath" jarfile="${file.jar}">
+    <classpath>
+      <fileset dir="${dir.lib}" includes="**/*.jar" />
+    </classpath>
+  </manifestclasspath>
+
+  <!-- Load the OneJar task -->
+  <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" onerror="report">
+    <classpath>
+      <fileset dir="${dir.devlib}" includes="**/*.jar" />
+    </classpath>
+  </taskdef>
 
   <!-- Create the build directory -->
   <target name="-mkdir-build">
@@ -38,12 +54,6 @@
 
   <!-- Create a runnable JAR with everything -->
   <target name="jar" depends="compile, -resources, -mkdir-dist">
-    <manifestclasspath property="classpath" jarfile="${file.jar}">
-      <classpath>
-        <fileset dir="${dir.lib}" includes="**/*.jar" />
-      </classpath>
-    </manifestclasspath>
-
     <jar destfile="${file.jar}" basedir="${dir.build}">
       <manifest>
         <attribute name="Main-Class" value="${class.main}" />
@@ -54,10 +64,25 @@
 
     <chmod file="${file.jar}" perm="u+x" />
   </target>
+
+  <!-- Create a runnable JAR that stands alone using OneJAR -->
+  <target name="onejar" depends="jar">
+    <one-jar destfile="${file.onejar}">
+      <main jar="${file.jar}"/>
+      
+      <lib>
+        <fileset dir="${dir.lib}" includes="**/*.jar" />
+      </lib>
+      
+      <binlib>
+        <fileset dir="${dir.lib}" includes="natives-*/*" />
+      </binlib>
+    </one-jar>
+  </target>
   
   <!-- Create a JAR and run it -->
-  <target name="run" depends="jar">
-    <java jar="${file.jar}" fork="true" />
+  <target name="run" depends="onejar">
+    <java jar="${file.onejar}" fork="true" />
   </target>
 
 
