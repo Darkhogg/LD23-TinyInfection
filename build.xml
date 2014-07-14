@@ -1,4 +1,4 @@
-<project name="tiny-infection" default="jar">
+<project name="tiny-infection" default="onejar">
 
   <property name="dir.src" value="src" />
   <property name="dir.res" value="res" />
