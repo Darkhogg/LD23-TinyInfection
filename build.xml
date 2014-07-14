@@ -12,19 +12,21 @@
 
   <property name="class.main" value="es.darkhogg.ld23.Main" />
 
-  <!-- Define the ClassPath -->
-  <manifestclasspath property="classpath" jarfile="${file.jar}">
-    <classpath>
-      <fileset dir="${dir.lib}" includes="**/*.jar" />
-    </classpath>
-  </manifestclasspath>
-
   <!-- Load the OneJar task -->
   <taskdef name="one-jar" classname="com.simontuffs.onejar.ant.OneJarTask" onerror="report">
     <classpath>
       <fileset dir="${dir.devlib}" includes="**/*.jar" />
     </classpath>
   </taskdef>
+
+  <!-- Defines the classpath -->
+  <target name="-classpath" depends="-mkdir-dist">
+    <manifestclasspath property="classpath" jarfile="${file.jar}">
+      <classpath>
+        <fileset dir="${dir.lib}" includes="**/*.jar" />
+      </classpath>
+    </manifestclasspath>
+  </target>
 
   <!-- Create the build directory -->
   <target name="-mkdir-build">
@@ -53,7 +55,7 @@
   </target>
 
   <!-- Create a runnable JAR with everything -->
-  <target name="jar" depends="compile, -resources, -mkdir-dist">
+  <target name="jar" depends="compile, -resources, -mkdir-dist, -classpath">
     <jar destfile="${file.jar}" basedir="${dir.build}">
       <manifest>
         <attribute name="Main-Class" value="${class.main}" />
