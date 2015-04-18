@@ -77,7 +77,9 @@
       </lib>
       
       <binlib>
-        <fileset dir="${dir.lib}" includes="natives-*/*" />
+        <fileset dir="${dir.lib}/natives-linux/" includes="*" />
+        <fileset dir="${dir.lib}/natives-mac/" includes="*" />
+        <fileset dir="${dir.lib}/natives-windows/" includes="*" />
       </binlib>
     </one-jar>
   </target>
