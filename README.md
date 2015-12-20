@@ -26,9 +26,7 @@ of its nonpredictability.
 |-------------------:|:-------|
 | *Left Click*       | Selects a cell.
 | *Right Click*      | Moves viruses to another cell.
-| `1`, `2`, `3`      | Selects a virus type (triangle, square, circle,
-                       respectively) for the movement (keep the key pressed).
-                       Pressing multiple keys selects more than one.
+| `1`, `2`, `3`      | Selects a virus type (triangle, square, circle, respectively) for the movement (keep the key pressed).   Pressing multiple keys selects more than one.
 | `W`, `A`, `S`, `D` | Move the camera around.
 
 
