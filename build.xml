@@ -1,4 +1,4 @@
-<project name="tiny-infection" default="onejar">
+<project name="tiny-infection" default="dist">
 
   <property name="dir.src" value="src" />
   <property name="dir.res" value="res" />
@@ -7,8 +7,15 @@
   <property name="dir.build" value="build" />
   <property name="dir.dist" value="dist" />
 
+  <property name="filename.onejar" value="tiny-infection.one.jar" />
+
+  <property name="filename.launcher.linux" value="tiny-infection.sh" />
+  <property name="filename.launcher.mac" value="tiny-infection.sh" />
+  <property name="filename.launcher.windows" value="tiny-infection.bat" />
+
   <property name="file.jar" value="${dir.dist}/tiny-infection.jar" />
-  <property name="file.onejar" value="${dir.dist}/tiny-infection.one.jar" />
+  <property name="file.onejar" value="${dir.dist}/${filename.onejar}" />
+  <property name="file.zip" value="${dir.dist}/tiny-infection.zip" />
 
   <property name="class.main" value="es.darkhogg.ld23.Main" />
 
@@ -71,11 +78,11 @@
   <target name="onejar" depends="jar">
     <one-jar destfile="${file.onejar}">
       <main jar="${file.jar}"/>
-      
+
       <lib>
         <fileset dir="${dir.lib}" includes="**/*.jar" />
       </lib>
-      
+
       <binlib>
         <fileset dir="${dir.lib}/natives-linux/" includes="*" />
         <fileset dir="${dir.lib}/natives-mac/" includes="*" />
@@ -83,12 +90,23 @@
       </binlib>
     </one-jar>
   </target>
-  
+
   <!-- Create a JAR and run it -->
   <target name="run" depends="onejar">
     <java jar="${file.onejar}" fork="true" />
   </target>
 
+  <!-- Pack the JAR in a ZIP with the launchers -->
+  <target name="dist" depends="onejar">
+    <zip destfile="${file.zip}">
+      <fileset dir=".">
+        <include name="${filename.launcher.linux}" />
+        <include name="${filename.launcher.mac}" />
+        <include name="${filename.launcher.windows}" />
+      </fileset>
+      <fileset dir="${dir.dist}" includes="${filename.onejar}"/>
+    </zip>
+  </target>
 
   <!-- Clean old compilations -->
   <target name="clean">
